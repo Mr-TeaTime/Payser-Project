@@ -54,7 +54,4 @@ class Error(webapp2.RequestHandler):
         else:
             self.redirect('/')
 
-    def post(self):
-        self.response.out.write("works")
-
 app = webapp2.WSGIApplication([('/.*', Error)], debug=True)

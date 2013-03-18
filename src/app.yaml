@@ -23,6 +23,9 @@ handlers:
 - url: /files
   script: Files.app
   
+- url: /add
+  script: Add.app
+  
 - url: /
   script: HomePage.app
   
