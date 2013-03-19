@@ -23,6 +23,11 @@ html {
 	-o-background-size: cover;
 	background-size: cover;
 }
+
+#wrapper{
+		margin: 0 auto;
+		width: 1000px;
+	}
 @media (max-width: 1980px){
 	#wrapper{
 		margin: 0 auto;

@@ -78,3 +78,8 @@ form input,label,select{
 	float: left;
 	width: 100%
 }
+
+#errors{
+	margin: 1em;
+	color: #ff0000	
+}

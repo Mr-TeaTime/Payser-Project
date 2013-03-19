@@ -17,7 +17,8 @@
 	</div>
 	<div id="upload">
 		<h3>Upload</h3>
-		<form id="upload-form" method="post" action="/add">
+		<div id="errors"></div>
+		<form name="upload-form" id="upload-form" method="post" action="/add">
 			<label>Type Of File</label>
 			<select id="type-selector" name="type">
 				<option value="payslip" selected>Payslip</option>
@@ -47,6 +48,4 @@
 			<input type="submit" />
 		</form>
 	</div>
-
-	
 </section>

@@ -25,6 +25,8 @@ class Add(webapp2.RequestHandler):
             specific_urls = """
                 <link type="text/css" rel="stylesheet" href="/stylesheets/""" + self.__class__.__name__ + """.css" />
                 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+                <script type="text/javascript" src="/js/validate.js"></script>
+                <script type="text/javascript" src="/js/upload_form.js"></script>
                 <script>
                     $(document).ready(function()
                     {
