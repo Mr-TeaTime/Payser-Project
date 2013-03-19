@@ -1,10 +1,31 @@
 import webapp2
-from google.appengine.api import users
 import jinja2
 import os
+import Models
+
+from google.appengine.ext import db
+from google.appengine.api import users
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
+
+def generate_files_html(self):
+    files = db.GqlQuery("SELECT * "
+                            "FROM File ")
+
+    
+    html = ""
+    for file in files:
+        html += """
+            <tr>
+                <td>"""+str(file.upload_date)+"""</td>
+                <td>"""+file.title+"""</td>
+                <td>"""+file.description+"""</td>
+                <td>View</td>
+            </tr>
+        """
+    return html
 
 class Files(webapp2.RequestHandler):
     def get(self):
@@ -35,6 +56,14 @@ class Files(webapp2.RequestHandler):
             </script>
         """
         
+        files_template_values = {
+            'files': generate_files_html(self)
+        }
+            
+        template = jinja_environment.get_template('Page_Content/files.html')
+        files_template = template.render(files_template_values)
+        
+        
         if users.get_current_user():
             myFile = open('Page_Content/files.html', 'r')
             
@@ -55,7 +84,7 @@ class Files(webapp2.RequestHandler):
             template_values = {
                 'specific_urls':specific_urls,
                 'nav': nav,
-                'content':myFile.read()
+                'content':files_template
             }
            
             template = jinja_environment.get_template('index.html')

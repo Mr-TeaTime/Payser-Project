@@ -1,10 +1,35 @@
 import webapp2
-from google.appengine.api import users
 import jinja2
 import os
+import Models
+
+from google.appengine.ext import db
+from google.appengine.api import users
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
+def generate_payslip_html(self):
+    payslips = db.GqlQuery("SELECT * "
+                            "FROM Payslip "
+                            "WHERE ANCESTOR IS :1 ",
+                            Models.payslip_key(users.get_current_user().user_id()))
+    
+    html = ""
+    for payslip in payslips:
+        html += """
+            <tr>
+                <td>"""+str(payslip.upload_date)+"""</td>
+                <td>"""+payslip.company+"""</td>
+                <td>"""+str(payslip.beginning)+"""</td>
+                <td>"""+str(payslip.ending)+"""</td>
+                <td>"""+str(payslip.income)+"""</td>
+                <td>"""+str(payslip.tax)+"""</td>
+                <td>"""+str(payslip.net)+"""</td>
+                <td>View</td>
+            </tr>
+        """
+    return html
 
 class Payslips(webapp2.RequestHandler):
     def get(self):
@@ -13,27 +38,34 @@ class Payslips(webapp2.RequestHandler):
         specific_urls = """
             <link type="text/css" rel="stylesheet" href="/stylesheets/""" + self.__class__.__name__ + """.css" />
             <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-            <script type="text/javascript">
+           <script type="text/javascript">
               google.load("visualization", "1", {packages:["corechart"]});
               google.setOnLoadCallback(drawChart);
               function drawChart() {
                 var data = google.visualization.arrayToDataTable([
-                  ['Year', 'Net', 'Tax'],
-                  ['2004', 360, 40],
-                  ['2005', 200, 20],
-                  ['2006', 360, 40],
-                  ['2007', 400, 33]
+                  ['Year', 'Income', 'Tax'],
+                  ['2004',  1000,      400],
+                  ['2005',  1170,      460],
+                  ['2006',  660,       1120],
+                  ['2007',  1030,      540]
                 ]);
         
                 var options = {
-                  title: 'Income Breakdown'
+                  title: 'Income Breakdown',
+                  hAxis: {title: 'Year',  titleTextStyle: {color: 'red'}}
                 };
         
-                var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                var chart = new google.visualization.AreaChart(document.getElementById('chart-div'));
                 chart.draw(data, options);
               }
             </script>
         """
+        payslip_template_values = {
+            'payslips': generate_payslip_html(self)
+        }
+            
+        template = jinja_environment.get_template('Page_Content/payslips.html')
+        payslip_template = template.render(payslip_template_values)
         
         if users.get_current_user():
             myFile = open('Page_Content/payslips.html', 'r')
@@ -55,7 +87,7 @@ class Payslips(webapp2.RequestHandler):
             template_values = {
                 'specific_urls':specific_urls,
                 'nav': nav,
-                'content':myFile.read()
+                'content': payslip_template
             }
            
             template = jinja_environment.get_template('index.html')

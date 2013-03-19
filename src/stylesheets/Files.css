@@ -105,7 +105,7 @@ Bluer-Blue		396E9C
 
 /*Table*/
 #table-container{
-	height: 60%;
+	height: 95%;
 }
 
 table{
@@ -144,12 +144,6 @@ tr:nth-child(odd) {background: #FFF}
 	color: #fff;
 	text-decoration: none;
 	padding: 2px 5px;
-}
-
-#chart-div{
-	height:35%;
-	width: 98%;
-	padding:1%;
 }
 
 /*End of Table*/

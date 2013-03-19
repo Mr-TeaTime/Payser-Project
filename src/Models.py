@@ -5,38 +5,46 @@ from google.appengine.api import users
 
 class Employee(db.Model):
     userid = db.StringProperty()
-    name = db.StringProperty(required=True)
-    email = db.StringProperty(required=True)
-    join_date = db.DateProperty(required=True)
+    name = db.StringProperty()
+    email = db.StringProperty()
+    
     income = db.IntegerProperty()
     tax = db.IntegerProperty()
     net = db.IntegerProperty()
-    employer = db.StringProperty()
+    company = db.StringProperty()
     
 class Employer(db.Model):
     userid = db.StringProperty()
-    name = db.StringProperty(required=True)
-    email = db.StringProperty(required=True)
-    join_date = db.DateProperty(required=True)
-    company = db.StringProperty(required=True)
+    name = db.StringProperty()
+    email = db.StringProperty()
+    join_date = db.DateProperty()
+    company = db.StringProperty()
+    
+    
     
 class Payslip(db.Model):
-    owner = db.StringProperty(required=True)
-    title = db.StringProperty(required=True)
-    upload_date = db.DateProperty(required=True)
+    ownerId = db.StringProperty()
+    upload_date = db.DateProperty(auto_now_add=True)
     beginning =  db.DateProperty()
     ending =  db.DateProperty()
-    income = db.IntegerProperty()
-    tax = db.IntegerProperty()
-    net = db.IntegerProperty()
-    company = db.StringProperty(required=True)
+    income = db.FloatProperty()
+    tax = db.FloatProperty()
+    net = db.FloatProperty()
+    company = db.StringProperty()
     
 class File(db.Model):
-    owner = db.StringProperty(required=True)
-    title = db.StringProperty(required=True)
-    upload_date = db.DateProperty(required=True)
-    data = db.BlobProperty(required=True)
-    mimetype = db.StringProperty(required=True)
+    ownerId = db.StringProperty()
+    title = db.StringProperty()
+    description = db.StringProperty()
+    upload_date = db.DateProperty(auto_now_add=True)
+    data = db.BlobProperty()
+    mimetype = db.StringProperty()
+    
+def payslip_key(owner_id):
+  return db.Key.from_path('Payslip', owner_id)
+
+def file_key(owner_id):
+  return db.Key.from_path('File', owner_id)
     
     
 
