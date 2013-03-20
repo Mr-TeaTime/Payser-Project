@@ -28,6 +28,9 @@ handlers:
   
 - url: /add
   script: Add.app
+ 
+- url: /settings
+  script: Settings.app
   
 - url: /
   script: HomePage.app

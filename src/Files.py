@@ -12,7 +12,9 @@ jinja_environment = jinja2.Environment(
 
 def generate_files_html(self):
     files = db.GqlQuery("SELECT * "
-                            "FROM File ")
+                "FROM File "
+                "WHERE ANCESTOR IS :1 ",
+                Models.file_key(users.get_current_user().user_id()))
 
     
     html = ""
