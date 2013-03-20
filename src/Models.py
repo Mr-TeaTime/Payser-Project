@@ -7,11 +7,6 @@ class Site_User(db.Model):
     userid = db.StringProperty()
     name = db.StringProperty()
     email = db.StringProperty()
-    
-    income = db.FloatProperty()
-    tax = db.FloatProperty()
-    net = db.FloatProperty()
-    
     company = db.StringProperty()
     account_type = db.StringProperty(choices=set(["employer", "employee", "admin"]))
 

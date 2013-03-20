@@ -72,6 +72,8 @@ class Settings(webapp2.RequestHandler):
                 "WHERE userid = :1 ",
                 user.user_id())
         
+        current_user = False
+        
         for payser_user in payser_users:
             current_user = payser_user
 
