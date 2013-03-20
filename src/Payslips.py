@@ -34,6 +34,21 @@ def generate_payslip_html(self):
 class Payslips(webapp2.RequestHandler):
     def get(self):
         
+        payslips = db.GqlQuery("SELECT * "
+                            "FROM Payslip "
+                            "WHERE ANCESTOR IS :1 ",
+                            Models.payslip_key(users.get_current_user().user_id()))
+        
+        list1 = [0,0,0,0]
+        list2 = [0,0,0,0]
+        
+        index = 0
+        for payslip in payslips:
+            
+            list1[index] = payslip.income
+            list2[index] = payslip.tax
+            index += 1
+        
         #set stylesheets needed per page 
         specific_urls = """
             <link type="text/css" rel="stylesheet" href="/stylesheets/""" + self.__class__.__name__ + """.css" />
@@ -43,16 +58,16 @@ class Payslips(webapp2.RequestHandler):
               google.setOnLoadCallback(drawChart);
               function drawChart() {
                 var data = google.visualization.arrayToDataTable([
-                  ['Year', 'Income', 'Tax'],
-                  ['2004',  1000,      400],
-                  ['2005',  1170,      460],
-                  ['2006',  660,       1120],
-                  ['2007',  1030,      540]
+                  ['Payslip', 'Income', 'Tax'],
+                  ['1',  """+str(list1[0])+""",      """+str(list2[0])+"""],
+                  ['2',  """+str(list1[1])+""",      """+str(list2[1])+"""],
+                  ['3',  """+str(list1[2])+""",      """+str(list2[2])+"""],
+                  ['4',  """+str(list1[3])+""",      """+str(list2[3])+"""]
                 ]);
         
                 var options = {
                   title: 'Income Breakdown',
-                  hAxis: {title: 'Year',  titleTextStyle: {color: 'red'}}
+
                 };
         
                 var chart = new google.visualization.AreaChart(document.getElementById('chart-div'));

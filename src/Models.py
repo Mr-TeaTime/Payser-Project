@@ -19,15 +19,15 @@ class Payslip(db.Model):
     tax = db.FloatProperty()
     net = db.FloatProperty()
     company = db.StringProperty()
+    file = db.BlobProperty()
     
 class File(db.Model):
     ownerid = db.StringProperty()
     title = db.StringProperty()
     description = db.StringProperty()
     upload_date = db.DateProperty(auto_now_add=True)
-    data = db.BlobProperty()
-    mimetype = db.StringProperty()
-    
+    file = db.BlobProperty()
+        
 def payslip_key(owner_id):
   return db.Key.from_path('Payslip', owner_id)
 
