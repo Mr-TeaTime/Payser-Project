@@ -29,3 +29,13 @@ employee.net = income - tax
 employee.account_type = "employee"
 
 employee.put()
+
+
+"""
+        if self.request.POST['file']:
+                file_name = files.blobstore.create(mime_type='application/octet-stream')
+                with files.open(file_name, 'a') as f:
+                    f.write('data')
+                files.finalize(file_name)
+                blob_key = files.blobstore.get_blob_key(file_name)
+"""

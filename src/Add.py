@@ -9,6 +9,7 @@ from google.appengine.api import users
 from google.appengine.ext import db
 
 
+
 import Models
 
 
@@ -50,11 +51,8 @@ class Add(webapp2.RequestHandler):
             """
             
             
-            #add the page query to the html
-            url = self.request.url
-            url = string.split(url, '/')
             Add_template_values = {
-                'page': url[len(url) - 1]
+                
             }
             
             template = jinja_environment.get_template('Page_Content/add.html')
@@ -87,8 +85,9 @@ class Add(webapp2.RequestHandler):
     def post(self):
         self.response.out.write("added <br />")
         user = users.get_current_user()
-    
+        
         if self.request.POST['type'] == "payslip":
+
             self.response.out.write("payslip <br />")
             
             payslip = Models.Payslip(parent=Models.payslip_key(user.user_id()))
