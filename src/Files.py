@@ -35,27 +35,6 @@ class Files(webapp2.RequestHandler):
         #set stylesheets needed per page 
         specific_urls = """
             <link type="text/css" rel="stylesheet" href="/stylesheets/""" + self.__class__.__name__ + """.css" />
-            <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-            <script type="text/javascript">
-              google.load("visualization", "1", {packages:["corechart"]});
-              google.setOnLoadCallback(drawChart);
-              function drawChart() {
-                var data = google.visualization.arrayToDataTable([
-                  ['Year', 'Net', 'Tax'],
-                  ['2004', 360, 40],
-                  ['2005', 200, 20],
-                  ['2006', 360, 40],
-                  ['2007', 400, 33]
-                ]);
-        
-                var options = {
-                  title: 'Income Breakdown'
-                };
-        
-                var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-                chart.draw(data, options);
-              }
-            </script>
         """
         
         files_template_values = {
