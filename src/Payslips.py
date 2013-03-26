@@ -5,6 +5,8 @@ import Models
 
 from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.ext import blobstore
+from google.appengine.ext.blobstore import BlobInfo
 
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
@@ -14,18 +16,33 @@ def generate_payslip_html(self, payslips):
     
     html = ""
     for payslip in payslips:
-        html += """
-            <tr>
-                <td>"""+str(payslip.upload_date)+"""</td>
-                <td>"""+payslip.company+"""</td>
-                <td>"""+str(payslip.beginning)+"""</td>
-                <td>"""+str(payslip.ending)+"""</td>
-                <td>"""+str(payslip.income)+"""</td>
-                <td>"""+str(payslip.tax)+"""</td>
-                <td>"""+str(payslip.net)+"""</td>
-                <td>View</td>
-            </tr>
-        """
+        if payslip.file_key:
+            html += """
+                <tr>
+                    <td>"""+str(payslip.upload_date)+"""</td>
+                    <td>"""+payslip.company+"""</td>
+                    <td>"""+str(payslip.beginning)+"""</td>
+                    <td>"""+str(payslip.ending)+"""</td>
+                    <td>"""+str(payslip.income)+"""</td>
+                    <td>"""+str(payslip.tax)+"""</td>
+                    <td>"""+str(payslip.net)+"""</td>
+                    <td><a href="/view_file/"""+str(payslip.file_key.key())+"""">View</a></td>
+                </tr>
+            """
+        else:
+            html += """
+                <tr>
+                    <td>"""+str(payslip.upload_date)+"""</td>
+                    <td>"""+payslip.company+"""</td>
+                    <td>"""+str(payslip.beginning)+"""</td>
+                    <td>"""+str(payslip.ending)+"""</td>
+                    <td>"""+str(payslip.income)+"""</td>
+                    <td>"""+str(payslip.tax)+"""</td>
+                    <td>"""+str(payslip.net)+"""</td>
+                    <td>View</td>
+                </tr>
+            """
+            
     return html
 
 class Payslips(webapp2.RequestHandler):
@@ -43,7 +60,8 @@ class Payslips(webapp2.RequestHandler):
             #Set the list to the first 4 payslips income and tax for the graph
             index = 0
             for payslip in payslips:
-                
+                if index >= 4:
+                    break
                 list1[index] = payslip.income
                 list2[index] = payslip.tax
                 index += 1
@@ -53,7 +71,7 @@ class Payslips(webapp2.RequestHandler):
             specific_urls = """
                 <link type="text/css" rel="stylesheet" href="/stylesheets/""" + self.__class__.__name__ + """.css" />
                 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-               <script type="text/javascript">
+                <script type="text/javascript">
                   google.load("visualization", "1", {packages:["corechart"]});
                   google.setOnLoadCallback(drawChart);
                   function drawChart() {
@@ -93,8 +111,8 @@ class Payslips(webapp2.RequestHandler):
             <nav>
                 <ul>
                     <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="#">Design</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="/design">Design</a></li>
+                    <li><a href="/about">About</a></li>
                     <li><a href="%s">Logout</a></li>
                 </ul>
             </nav>

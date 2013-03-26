@@ -6,7 +6,7 @@ import os
 jinja_environment = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
-class HomePage(webapp2.RequestHandler):
+class Design(webapp2.RequestHandler):
     def get(self):
         
         
@@ -16,7 +16,7 @@ class HomePage(webapp2.RequestHandler):
         """
         
         
-        myFile = open('Page_Content/main.html', 'r')
+        myFile = open('Page_Content/design.html', 'r')
         
         #Set the nav depending on login status
         if users.get_current_user():
@@ -32,17 +32,21 @@ class HomePage(webapp2.RequestHandler):
             </nav>
             """ % url
         else:
-            url = users.create_login_url(self.request.uri + "dashboard")
+            
+            url = users.create_login_url(self.request.uri + "design")
             nav = """
             <nav>
-                <ul style="margin-left:40px;">
-                    <li style="padding-right: 20px;"><a href="#">Home</a></li>
-                    <li style="padding-right: 20px;"><a href="/design">Design</a></li>
-                    <li style="padding-right: 20px;"><a href="/about">About</a></li>
-                    <li style="padding-right: 20px;"><a href="%s">Login</a></li>
+                <ul>
+                    <li><a href="/dashboard">Home</a></li>
+                    <li><a href="/design">Design</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="%s">Login</a></li>
                 </ul>
             </nav>
             """ % url
+            
+            #self.response.out.write(nav.render(start_page))
+            
             
         template_values = {
             'specific_urls':specific_urls,
@@ -54,4 +58,4 @@ class HomePage(webapp2.RequestHandler):
         self.response.out.write(template.render(template_values))
 
 
-app = webapp2.WSGIApplication([('/', HomePage)], debug=True)
+app = webapp2.WSGIApplication([('/design', Design)], debug=True)

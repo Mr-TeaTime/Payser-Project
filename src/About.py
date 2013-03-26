@@ -4,7 +4,7 @@ import jinja2
 import os
 
 jinja_environment = jinja2.Environment(
-    loader=jinja2.FileSystemLoader(os.path.dirname(__file__) + "/Page_Content"))
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
 
 class About(webapp2.RequestHandler):
     def get(self):

@@ -17,6 +17,12 @@ handlers:
 - url: /fonts
   static_dir: fonts
   
+- url: /design
+  script: Design.app
+
+- url: /about
+  script: About.app
+  
 - url: /dashboard
   script: Dashboard.app
   
@@ -28,7 +34,10 @@ handlers:
   
 - url: /add
   script: Add.app
- 
+  
+- url: /view_file/([^/]+)?
+  script: ServeHandler.app
+  
 - url: /settings
   script: Settings.app
   

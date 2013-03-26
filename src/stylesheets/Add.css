@@ -69,7 +69,6 @@ h3{
 
 form{
 	margin: 1em;
-	width: 40%;
 }
 
 
@@ -79,7 +78,7 @@ form input,label,select{
 	width: 100%
 }
 
-#errors{
+#errors1, #errors2{
 	margin: 1em;
 	color: #ff0000	
 }

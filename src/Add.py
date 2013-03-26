@@ -3,10 +3,16 @@ import jinja2
 import os
 import string
 import datetime
+import cgi
 
 
 from google.appengine.api import users
 from google.appengine.ext import db
+
+from google.appengine.api import files
+from google.appengine.ext import blobstore
+from google.appengine.ext.blobstore import BlobInfo
+
 
 
 
@@ -29,26 +35,6 @@ class Add(webapp2.RequestHandler):
                 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
                 <script type="text/javascript" src="/js/validate.js"></script>
                 <script type="text/javascript" src="/js/upload_form.js"></script>
-                <script>
-                    $(document).ready(function()
-                    {
-                        $("#file-info").hide();
-                    });
-                    $(document).ready(function()
-                    {
-                        $("#type-selector").change(function() {
-                            if ($(this).val() == "payslip"){
-                                $("#payslip-info").show();
-                                $("#file-info").hide();
-                            }
-                            if( $(this).val() == "other"){
-                                $("#payslip-info").hide();
-                                $("#file-info").show();
-                            }
-                        });
-                    });
-                </script>
-
             """
             
             url = users.create_logout_url(self.request.uri)
@@ -56,8 +42,8 @@ class Add(webapp2.RequestHandler):
             <nav>
                 <ul>
                     <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="#">Design</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="/design">Design</a></li>
+                    <li><a href="/about">About</a></li>
                     <li><a href="%s">Logout</a></li>
                 </ul>
             </nav>
@@ -96,6 +82,20 @@ class Add(webapp2.RequestHandler):
             payslip.net = float(self.request.POST['income']) - float(self.request.POST['tax'])
             payslip.company = self.request.POST['company']
             
+            # Create the file
+            file_name = files.blobstore.create(mime_type='application/octet-stream')
+           
+            
+            # Open the file and write to it
+            with files.open(file_name, 'a') as f:
+                f.write("data")
+            
+            # Finalize the file. Do this before attempting to read it.
+            files.finalize(file_name)
+            
+            # Get the file's blob key
+            payslip.file_key = files.blobstore.get_blob_key(file_name)
+            
             #Output the given form to the confirmation page
             self.response.out.write(payslip.ownerId + "<br/>" )
             self.response.out.write(str(payslip.upload_date) + "<br/>")
@@ -107,7 +107,9 @@ class Add(webapp2.RequestHandler):
             self.response.out.write(str(payslip.company) + "<br/>")
             
             #add the model to the data store
-            payslip.put()                         
+            payslip.put()             
+            self.redirect('/payslips')
+           
              
         else:
             self.response.out.write("other <br />")
@@ -118,6 +120,28 @@ class Add(webapp2.RequestHandler):
             file.ownerId = user.user_id()
             file.title = self.request.POST['title']
             file.description = self.request.POST['description']
+
+
+            form_data = cgi.FieldStorage()
+            
+            if form_data.getvalue('file'):
+                subject = form_data.getvalue('file')
+                # Create the file
+                file_name = files.blobstore.create(mime_type='application/octet-stream')
+                
+                # Open the file and write to it
+                with files.open(file_name, 'a') as f:
+                    f.write(subject)
+                
+                # Finalize the file. Do this before attempting to read it.
+                files.finalize(file_name)
+                
+                # Get the file's blob key
+                file.file_key = files.blobstore.get_blob_key(file_name)
+               
+            else:
+               subject = "Not set"
+               
             
             #Output the given form to the confirmation page
             self.response.out.write( file.ownerId + "<br/>" )
@@ -126,6 +150,7 @@ class Add(webapp2.RequestHandler):
             
             #add the model to the data store
             file.put()
+            self.redirect('/files')
 
 
 app = webapp2.WSGIApplication([('/add', Add)], debug=True)

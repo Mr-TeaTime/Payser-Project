@@ -19,14 +19,24 @@ def generate_files_html(self):
     
     html = ""
     for file in files:
-        html += """
-            <tr>
-                <td>"""+str(file.upload_date)+"""</td>
-                <td>"""+file.title+"""</td>
-                <td>"""+file.description+"""</td>
-                <td>View</td>
-            </tr>
-        """
+        if file.file_key:
+            html += """
+                <tr>
+                    <td>"""+str(file.upload_date)+"""</td>
+                    <td>"""+file.title+"""</td>
+                    <td>"""+file.description+"""</td>
+                    <td><a href="/view_file/"""+str(file.file_key.key())+"""">View</a></td>
+                </tr>
+            """
+        else:
+            html += """
+                <tr>
+                    <td>"""+str(file.upload_date)+"""</td>
+                    <td>"""+file.title+"""</td>
+                    <td>"""+file.description+"""</td>
+                    <td>View</td>
+                </tr>
+            """
     return html
 
 class Files(webapp2.RequestHandler):
@@ -54,8 +64,8 @@ class Files(webapp2.RequestHandler):
             <nav>
                 <ul>
                     <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="#">Design</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="/design">Design</a></li>
+                    <li><a href="/about">About</a></li>
                     <li><a href="%s">Logout</a></li>
                 </ul>
             </nav>

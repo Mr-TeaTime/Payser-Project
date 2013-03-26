@@ -43,8 +43,8 @@ class Settings(webapp2.RequestHandler):
             <nav>
                 <ul>
                     <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="#">Design</a></li>
-                    <li><a href="#">About</a></li>
+                    <li><a href="/design">Design</a></li>
+                    <li><a href="/about">About</a></li>
                     <li><a href="%s">Logout</a></li>
                 </ul>
             </nav>
